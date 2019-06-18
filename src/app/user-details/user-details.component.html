@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <p class="font-italic">Total Results : {{totalRecords}}</p>
+  </div>
+  <div class="col-md-4"></div>
+</div>
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <div *ngFor="let item of userdetails.items">
+      <img [src]="item.avatar" />
+    </div>
+  </div>
+  <div class="col-md-4"></div>
+</div>
