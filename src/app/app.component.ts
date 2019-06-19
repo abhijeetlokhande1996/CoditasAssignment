@@ -88,19 +88,11 @@ export class AppComponent implements OnInit {
 
   }
   onClickPage = (pageIdx) => {
-    this.selectedPage = pageIdx;
-      this.startIdx = pageIdx * 5;
-      this.endIdx = pageIdx * 5 + 5;
-    /* if (Math.round(this.totalRecords / 5) === pageIdx + 1) {
 
-        this.selectedPage = pageIdx;
-        this.startIdx = pageIdx * 5;
-        this.endIdx = this.totalRecords;
-    } else {
       this.selectedPage = pageIdx;
       this.startIdx = pageIdx * 5;
       this.endIdx = pageIdx * 5 + 5;
-    } */
+
 
   }
 }
