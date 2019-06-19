@@ -1,16 +1,43 @@
+
 <div class="row">
-  <div class="col-md-4"></div>
-  <div class="col-md-4">
-    <p class="font-italic">Total Results : {{totalRecords}}</p>
-  </div>
-  <div class="col-md-4"></div>
-</div>
-<div class="row">
-  <div class="col-md-4"></div>
-  <div class="col-md-4">
-    <div *ngFor="let item of userdetails.items">
-      <img [src]="item.avatar" />
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <div class="media border p-3 mb-2">
+      <img [src]="userdetail.avatar" [alt]="userdetail.login" class="mr-3 mt-3 rounded-circle" style="width:60px;">
+      <div class="media-body">
+        <h4>{{userdetail.login}}</h4>
+        <h5><small>Profile URL: <i>{{userdetail.url}}</i></small></h5>
+        <button class="btn btn-outline-primary float-right" *ngIf="userdetail.detailsButtonFlag" (click)="onClickDetailsCollapseButton(userdetail)">Details</button>
+        <button class="btn btn-outline-primary float-right" *ngIf="!userdetail.detailsButtonFlag" (click)="onClickDetailsCollapseButton(userdetail)">Collapse</button>
+        <app-repo-loader *ngIf="userdetail.isRepoLoading"></app-repo-loader>
+        <div *ngIf="!userdetail.detailsButtonFlag && !userdetail.isRepoLoading">
+          <table  class="table table-borderless">
+            <tr>
+              <th>Name of respository</th>
+              <th>Programming language</th>
+              <th>Open issue count</th>
+              <th>Fork counts</th>
+              <th>Watchers</th>
+            </tr>
+            <tr *ngFor="let repo of userdetail.repos|slice: startIdxForRepo: endIdxForRepo">
+              <td>{{repo.name}}</td>
+              <td>{{repo.language}}</td>
+              <td>{{repo.open_issues_count}}</td>
+              <td>{{repo.forks_count}}</td>
+              <td>{{repo.watchers}}</td>
+            </tr>
+          </table>
+          <ul class="pagination d-flex justify-content-center">
+            <li *ngFor="let page of reposLen|times;let i = index" class="page-item" [ngClass]="{
+              'active': selectedPage == i
+            }">
+              <a class="page-link" style="cursor: pointer" (click)="onClickPage(i)">{{i+1}}</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
     </div>
   </div>
-  <div class="col-md-4"></div>
+  <div class="col-md-2"></div>
 </div>

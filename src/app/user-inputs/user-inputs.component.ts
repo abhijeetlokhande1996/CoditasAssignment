@@ -4,7 +4,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { GetUsersFromGithubService } from '../services/get-users-from-github.service';
 import { UsersService } from '../services/users.service';
-import { throwError, of, empty } from 'rxjs';
+import {  empty } from 'rxjs';
 
 
 
@@ -18,11 +18,12 @@ export class UserInputsComponent implements OnInit {
 
   userInputForm: FormGroup;
   sortOptions: Array<string>;
-  sortOrder: number = null;
   isLoading: boolean;
   isError: boolean;
   errMsg: string = null;
+
   @Output() isLoadingEvent: EventEmitter<boolean>  = new EventEmitter();
+  @Output() sortByEvent: EventEmitter<number> = new EventEmitter();
   constructor(private githubService: GetUsersFromGithubService,
     private userService: UsersService) { }
 
@@ -35,26 +36,31 @@ export class UserInputsComponent implements OnInit {
       searchString: new FormControl(null, [Validators.required])
     });
 
-    this.userInputForm.valueChanges
-    .pipe(debounceTime(1000), distinctUntilChanged(), switchMap((values) => {
-      this.sortOrder = values.sortBy;
+    this.userInputForm.get('sortBy').valueChanges.subscribe((sortBy) => {
+
+      this.sortByEvent.emit(sortBy);
+    });
+    this.userInputForm.get('searchString').valueChanges
+    .pipe(debounceTime(1000), distinctUntilChanged(), switchMap((searchString) => {
+      // console.log(searchString);
       this.isLoading = true;
       this.isLoadingEvent.emit(this.isLoading);
-      if (!values.searchString){
+      if (!searchString) {
         console.log('Search String Empty');
         this.isLoading = false;
         this.isError = true;
         this.errMsg = 'Search string is empty';
         return empty();
       }
-      return this.githubService.getGithubUsers(values.searchString).pipe(catchError(err => {
+      return this.githubService.getGithubUsers(searchString).pipe(catchError(err => {
         this.isLoading = false;
         this.errMsg = 'Check your internet connection';
         return empty();
       } ));
     }), map((resp) => {
       const items: Array<any> = resp.items;
-      switch (this.sortOrder) {
+      const sortBy: number = this.userInputForm.get('sortBy').value;
+      switch (sortBy) {
         case 1:
           // ascending sort by names
           items.sort((firstUser, secondUser) => {
@@ -110,6 +116,8 @@ export class UserInputsComponent implements OnInit {
     })).subscribe((resp) => {
       const users: Users = resp;
       users.items.forEach(user => {
+        user.detailsButtonFlag = true;
+        user.isRepoLoading = false;
           fetch(user.avatar_url).then((imgResp) => {
             imgResp.arrayBuffer().then(buffer => {
               const imgInStr = 'data:image/jpeg;base64,' + this.arrayBufferToBase64(buffer);
