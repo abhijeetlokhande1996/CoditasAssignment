@@ -37,8 +37,11 @@ export class UserInputsComponent implements OnInit {
     });
 
     this.userInputForm.get('sortBy').valueChanges.subscribe((sortBy) => {
+      const searchString = this.userInputForm.get('searchString').value;
+      if (searchString) {
+        this.sortByEvent.emit(sortBy);
+      }
 
-      this.sortByEvent.emit(sortBy);
     });
     this.userInputForm.get('searchString').valueChanges
     .pipe(debounceTime(1000), distinctUntilChanged(), switchMap((searchString) => {

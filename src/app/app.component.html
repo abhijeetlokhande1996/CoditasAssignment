@@ -24,7 +24,7 @@
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
-        <ul class="pagination d-flex justify-content-center">
+        <ul class="pagination d-flex justify-content-end">
             <li *ngFor="let page of totalRecords|times;let i = index" class="page-item" [ngClass]="{
               'active': selectedPage == i
             }">

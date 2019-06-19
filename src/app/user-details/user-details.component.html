@@ -27,7 +27,7 @@
               <td>{{repo.watchers}}</td>
             </tr>
           </table>
-          <ul class="pagination d-flex justify-content-center">
+          <ul class="pagination d-flex justify-content-end">
             <li *ngFor="let page of reposLen|times;let i = index" class="page-item" [ngClass]="{
               'active': selectedPage == i
             }">
